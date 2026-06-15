@@ -40,11 +40,17 @@ Codex 的 Skills 通常以一个包含 `SKILL.md` 的目录为核心；`SKILL.md
 在项目根目录中运行以下 PowerShell 命令，可将该 Skill 安装到当前用户的 Codex Skills 目录：
 
 ```powershell
-Copy-Item `
-  -LiteralPath (Get-Location).Path `
-  -Destination (Join-Path $HOME ".codex\skills\qt-cpp-commenter") `
-  -Recurse
+$destination = Join-Path $HOME ".codex\skills\qt-cpp-commenter"
+New-Item -ItemType Directory -Path $destination -Force | Out-Null
+
+Copy-Item -LiteralPath "SKILL.md" -Destination $destination
+
+@("assets", "examples", "references", "scripts") | ForEach-Object {
+    Copy-Item -LiteralPath $_ -Destination $destination -Recurse
+}
 ```
+
+该命令只复制 Skill 运行所需内容，不会复制 `.git`、`README.md`、`LICENSE` 等仓库文件。
 
 安装后可以运行以下命令检查 `SKILL.md` 是否存在：
 
